@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 
 export interface ContactProps {
     show: boolean
@@ -10,6 +10,35 @@ const Contact = ({
         show,
         setShow
     } : ContactProps) => {
+
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
+    const [userType, setUserType] = useState<string>('');
+
+    const closeForm = () => {
+        setName('');
+        setEmail('');
+        setMessage('');
+        setUserType('');
+        
+        setShow(false);
+    }
+
+    const onSubmit = () => {
+        // call php function somehow
+        // fetch('https://nu-lxp.ch/mail/index.php', {
+        //     method: 'POST',
+        //     body: JSON.stringify({ name, email, message, subject: 'Test mail' }),
+        // });
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "https://nu-lxp.ch/mail/index.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("name="+name+"&email=" + email + "&message=" +message+ "&subject=" + userType + " requests access to nu.");
+
+        closeForm();
+    }
     
     return (
         <Transition appear show={show} as={Fragment}>
@@ -57,25 +86,25 @@ const Contact = ({
                         <div className="px-10 py-5 my-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div className="mb-4">
-                                    <input type="text" className="w-full rounded-lg py-2 text-sm bg-blue-50 green-placeholder border-0" placeholder="Name"/>
+                                    <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="w-full rounded-lg py-2 text-sm bg-blue-50 green-placeholder border-0" placeholder="Name"/>
                                 </div>
                                 <div className="mb-4">
-                                    <input type="text" className="w-full rounded-lg py-2 text-sm bg-blue-50 green-placeholder border-0" placeholder="Email"/>
+                                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="text" className="w-full rounded-lg py-2 text-sm bg-blue-50 green-placeholder border-0" placeholder="Email"/>
                                 </div>
                                 <div className="mb-4 md:col-span-2">
-                                    <textarea className="w-full h-full rounded-lg py-3 text-sm bg-blue-50 border-0 green-placeholder" placeholder="Message"></textarea>
+                                    <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="w-full h-full rounded-lg py-3 text-sm bg-blue-50 border-0 green-placeholder" placeholder="Message"></textarea>
                                 </div>
                                 <div className="md:col-span-2 flex flex-col md:flex-row md:justify-center">
                                     <div className="flex items-center">
-                                        <input type="radio" className="mr-2" id="student" name="type" value="1"/>
+                                        <input checked={userType === 'student'} onChange={(e) => setUserType(e.target.id)} type="radio" className="mr-2" id="student" name="type" value="1"/>
                                         <label htmlFor="student">Student</label>
                                     </div>
                                     <div className="flex items-center md:mx-3">
-                                        <input type="radio" className="mr-2" id="user" name="type" value="2" />
+                                        <input checked={userType === 'user'} onChange={(e) => setUserType(e.target.id)} type="radio" className="mr-2" id="user" name="type" value="2" />
                                         <label htmlFor="user">User</label>
                                     </div>
                                     <div className="flex items-center">
-                                        <input type="radio" className="mr-2" id="publisher" name="type" value="3" />
+                                        <input checked={userType === 'publisher'} onChange={(e) => setUserType(e.target.id)} type="radio" className="mr-2" id="publisher" name="type" value="3" />
                                         <label htmlFor="publisher">Publisher</label>
                                     </div>
                                 </div>
@@ -84,14 +113,14 @@ const Contact = ({
                                 <button
                                     type="button"
                                     className="inline-flex justify-center mr-4 px-4 py-2 text-sm font-medium text-white bg-green-500 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                                    onClick={()=>{setShow(false)}}
+                                    onClick={onSubmit}
                                 >
                                     Submit
                                 </button>
                                 <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                                    onClick={()=>{setShow(false)}}
+                                    onClick={closeForm}
                                 >
                                     Cancel
                                 </button>

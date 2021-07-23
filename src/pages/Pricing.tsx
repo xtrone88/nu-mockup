@@ -2,6 +2,7 @@ import {useState} from "react";
 import Assets from "../assets/assets";
 import Calculate from '../components/Calculate';
 import Contact from "../components/Contact";
+import MetaTags from 'react-meta-tags';
 
 const Pricing = () => {
 
@@ -11,11 +12,16 @@ const Pricing = () => {
 
     return (
         <>
+        <MetaTags>
+          <title>NU LXP | Prices</title>
+          <meta name="description" content="Education must be free - so are we"></meta>
+        </MetaTags>
+
         <div className="px-4 lg:container lg:mx-auto">
             <h1 className="font-mont-semibold leading-normal text-4xl md:text-6xl text-center mt-24 md:mt-36">
                 Pricing
             </h1>
-            <div className="flex flex-col items-center justify-center">
+            {/* <div className="flex flex-col items-center justify-center">
                 <p className="text-center mt-10 max-w-lg">
                     The prices do not include VAT, for a more detailed offer for your school or company please contact our sales team. 
                 </p>
@@ -23,7 +29,7 @@ const Pricing = () => {
                     onClick={()=>setShowContact(true)}>
                     Contact Now
                 </button>
-            </div>
+            </div> */}
             <div className="grid grid-cols-1 md:grid-cols-2 mt-20 mb-20">
                 <div className="md:p-2 lg:px-10 flex justify-center">
                     <div className="transition delay-150 duration-300 ease-in-out transform hover:scale-105 relative rounded-xl shadow-2xl bg-gray-100 lg:max-w-sm p-10">

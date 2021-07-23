@@ -4,11 +4,13 @@ import { Transition } from "@headlessui/react";
 import { MenuIcon } from "@heroicons/react/outline";
 import { NavLink } from "react-router-dom";
 
-import {useAppDispatch, useAppSelector} from "../redux/hooks";
-import {logout, login, selectUser} from "../redux/userSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { logout, login, selectUser } from "../redux/userSlice";
 
 import classNames from "classnames";
 import Assets from "../assets/assets";
+
+import i18next from "i18next";
 
 const navigation = [
   { name: "Home", to: "/", current: true, exact: true },
@@ -23,6 +25,7 @@ const Navbar = () => {
   const dispatch = useAppDispatch()
   const [isSticky, setSticky] = useState(false)
   const [isDrop, setDrop] = useState(false)
+  const [isEng, setEng] = useState(true)
 
   useEffect(() => {
     window.addEventListener('scroll', (event) => {
@@ -46,7 +49,7 @@ const Navbar = () => {
   }, [])
 
   return (
-    <nav className={classNames({"py-4 md:pt-8 fixed w-full h-auto md:static z-50 bg-transparent":true, "bg-white":isSticky})}>
+    <nav className={classNames({ "py-4 md:pt-8 fixed w-full h-auto md:static z-50 bg-transparent": true, "bg-white": isSticky })}>
       <div className="relative px-4 lg:container lg:mx-auto h-10 md:h-16">
         <div className="flex items-center justify-between">
           <div className="flex-shrink-0">
@@ -75,36 +78,39 @@ const Navbar = () => {
               </NavLink>
             ))}
           </div>
-
-          {!user.logined ? 
-          <div className="hidden md:flex items-center">
-            <button className="border border-grey-100 active:bg-indigo-800 rounded-xl px-4 py-2 w-24 text-base lg:text-lg lg:w-32 mr-4 focus:outline-none focus:ring-2 focus:ring-indigo-900">
-              Sign Up
-            </button>
-            <button className="border border-grey-100 bg-black text-white active:bg-indigo-800 rounded-xl px-4 py-2 w-24 text-base lg:text-lg lg:w-32 hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-900"
+          <div className="hidden md:flex items-center mx-6 spacex-2 lg:space-x-5">
+            <div className={classNames("cursor-pointer", { "text-center text-blue-500 text-base lg:text-lg font-bold": isEng })} onClick={() => { i18next.changeLanguage("en"); setEng(true); }}>EN</div>
+            <div className={classNames("cursor-pointer", { "text-center text-blue-500 text-base lg:text-lg font-bold": !isEng })} onClick={() => { i18next.changeLanguage("fr"); setEng(false); }}>DE</div>
+          </div>
+          {!user.logined ?
+            <div className="hidden md:flex items-center">
+              <button className="border border-grey-100 active:bg-indigo-800 rounded-xl px-4 py-2 w-24 text-base lg:text-lg lg:w-32 mr-4 focus:outline-none focus:ring-2 focus:ring-indigo-900">
+                Sign Up
+              </button>
+              <button className="border border-grey-100 bg-black text-white active:bg-indigo-800 rounded-xl px-4 py-2 w-24 text-base lg:text-lg lg:w-32 hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-900"
               /*onClick={()=>dispatch(login({name:'Sandra K.', job:'student'}))}*/>
-              Sign In
-            </button>
-          </div>
-          :
-          <div className="hidden md:flex items-center">
-            <div className="flex-shrink-0 flex flex-col items-center justify-center mr-6">
-              <div className="font-mont-semibold">{user.name}</div>
-              <div className="text-sm">{user.job}</div>
+                Sign In
+              </button>
             </div>
-            <img src={Assets.images.userAvatar} alt="User Avatar" className="flex-shrink-0 w-14 h-14"
-              onClick={()=>dispatch(logout())}/>
-          </div>
+            :
+            <div className="hidden md:flex items-center">
+              <div className="flex-shrink-0 flex flex-col items-center justify-center mr-6">
+                <div className="font-mont-semibold">{user.name}</div>
+                <div className="text-sm">{user.job}</div>
+              </div>
+              <img src={Assets.images.userAvatar} alt="User Avatar" className="flex-shrink-0 w-14 h-14"
+                onClick={() => dispatch(logout())} />
+            </div>
           }
 
           <div className="flex items-center md:hidden">
             <div onClick={() => setDrop(!isDrop)} className="disclosure-btn inline-flex items-center justify-center p-2 rounded-md text-indigo-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-              <MenuIcon className={classNames({"block h-6 w-6":true, "transform rotate-90":isDrop})} aria-hidden="true" />
+              <MenuIcon className={classNames({ "block h-6 w-6": true, "transform rotate-90": isDrop })} aria-hidden="true" />
             </div>
           </div>
         </div>
       </div>
-      
+
       <Transition
         show={isDrop}
         enter="transform transition duration-[400ms]"
@@ -115,20 +121,25 @@ const Navbar = () => {
         leaveTo="opacity-0 scale-95 "
       >
         <div className=".disclosure-panel md:hidden static bg-white px-4 pt-4 w-full">
-        {!user.logined ? 
-          <div className="flex items-center">
-            <button className="flex-1 border border-grey-100 active:bg-indigo-800 rounded-xl px-4 py-2 text-base mr-2 focus:outline-none focus:outline-none focus:ring-2 focus:ring-indigo-900">
-              Sign Up
-            </button>
-            <button className="flex-1 border border-grey-100 active:bg-indigo-800 rounded-xl px-4 py-2 text-base ml-4 bg-black text-white focus:outline-none focus:outline-none focus:ring-2 focus:ring-indigo-900"
-              onClick={()=>dispatch(login({name:'Sandra K.', job:'student'}))}>
-              Sign In
-            </button>
-          </div>
-          :
-          <div className="flex items-center">
+          {/* <div className="flex pt-2 pb-3 space-y-1">
+            <div className={classNames("cursor-pointer", { "pr-4 text-blue-500 text-base lg:text-lg font-bold": isEng })} onClick={() => { i18next.changeLanguage("en"); setEng(true); }}>EN</div>
+            <div className={classNames("cursor-pointer", { "text-blue-500 text-base lg:text-lg font-bold": !isEng })} onClick={() => { i18next.changeLanguage("fr"); setEng(false); }}>DE</div>
+          </div> */}
+
+          {!user.logined ?
+            <div className="flex items-center">
+              <button className="flex-1 border border-grey-100 active:bg-indigo-800 rounded-xl px-4 py-2 text-base mr-2 focus:outline-none focus:outline-none focus:ring-2 focus:ring-indigo-900">
+                Sign Up
+              </button>
+              <button className="flex-1 border border-grey-100 active:bg-indigo-800 rounded-xl px-4 py-2 text-base ml-4 bg-black text-white focus:outline-none focus:outline-none focus:ring-2 focus:ring-indigo-900"
+                onClick={() => dispatch(login({ name: 'Sandra K.', job: 'student' }))}>
+                Sign In
+              </button>
+            </div>
+            :
+            <div className="flex items-center">
               <img src={Assets.images.userAvatar} alt="User Avatar" className="flex-shrink-0 w-14 h-14 mr-6"
-                onClick={()=>dispatch(logout())}/>
+                onClick={() => dispatch(logout())} />
               <div className="flex-shrink-0 flex flex-col justify-center">
                 <div className="font-mont-semibold">{user.name}</div>
                 <div className="text-sm">{user.job}</div>
@@ -150,6 +161,14 @@ const Navbar = () => {
                 {item.name}
               </NavLink>
             ))}
+            <div className={classNames("text-grey-900 hover:bg-gray-300 block px-1 py-2 rounded-md text-lg", { "text-blue-500 font-bold": isEng })}
+              onClick={() => { setDrop(false); i18next.changeLanguage("en"); setEng(true); }}>
+                EN
+            </div>
+            <div className={classNames("text-grey-900 hover:bg-gray-300 block px-1 py-2 rounded-md text-lg", { "text-blue-500 font-bold": !isEng })}
+              onClick={() => { setDrop(false); i18next.changeLanguage("fr"); setEng(false); }}>
+                DE
+            </div>
           </div>
         </div>
       </Transition>

@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useState } from 'react';
 
 import Assets from "../assets/assets";
 
@@ -11,6 +12,29 @@ const navigation = [
 ];
 
 const Footer = () => {
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
+    const [userType, setUserType] = useState<string>('');
+
+    const onSubmit = () => {
+        // call php function somehow
+        // fetch('https://nu-lxp.ch/mail/index.php', {
+        //     method: 'POST',
+        //     body: JSON.stringify({ name, email, message, subject: 'Test mail' }),
+        // });
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "https://nu-lxp.ch/mail/index.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("name="+name+"&email=" + email + "&message=" +message+ "&subject=" + userType + " requests access to nu.");
+        
+        setName('');
+        setEmail('');
+        setMessage('');
+        setUserType('');
+    }
+
     return (
         <div className="bg-black text-white">
             <div className="px-4 lg:container lg:mx-auto pt-10">
@@ -32,7 +56,7 @@ const Footer = () => {
                     <div className="col-span-12 md:col-span-3">
                         <h6 className="font-mont-semibold text-sm mt-10">Address</h6>
                         <p className="mt-3 text-xs">
-                            nu. AG <br/>
+                            nu.<br/>
                             Stampfenbachstrasse 57 <br/>
                             8006 Zürich <br/>
                             Switzerland
@@ -62,30 +86,30 @@ const Footer = () => {
                         <h6 className="font-mont-semibold text-sm">Get In Touch</h6>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
                             <div>
-                                <input type="text" className="w-full rounded-lg py-3 text-sm bg-gray-900" placeholder="Name"/>
+                                <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="w-full rounded-lg py-3 text-sm bg-gray-900" placeholder="Name"/>
                             </div>
                             <div>
-                                <input type="text" className="w-full rounded-lg py-3 text-sm bg-gray-900" placeholder="Email"/>
+                                <input value={email} onChange={(e) => setEmail(e.target.value)} type="text" className="w-full rounded-lg py-3 text-sm bg-gray-900" placeholder="Email"/>
                             </div>
                             <div className="md:col-span-2">
-                                <textarea className="w-full rounded-lg py-3 text-sm bg-gray-900 h-20"></textarea>
+                                <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="w-full rounded-lg py-3 text-sm bg-gray-900 h-20"></textarea>
                             </div>
                             <div className="md:col-span-2 flex flex-col md:flex-row md:justify-center">
                                 <div className="flex items-center">
-                                    <input type="radio" className="mr-2" id="student" name="type" value="1"/>
+                                    <input checked={userType === 'student'} onChange={(e) => setUserType(e.target.id)} type="radio" className="mr-2" id="student" name="type" value="1"/>
                                     <label htmlFor="student">Student</label>
                                 </div>
                                 <div className="flex items-center md:mx-3">
-                                    <input type="radio" className="mr-2" id="user" name="type" value="2" />
+                                    <input checked={userType === 'user'} onChange={(e) => setUserType(e.target.id)} type="radio" className="mr-2" id="user" name="type" value="2" />
                                     <label htmlFor="user">User</label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input type="radio" className="mr-2" id="publisher" name="type" value="3" />
+                                    <input checked={userType === 'publisher'} onChange={(e) => setUserType(e.target.id)} type="radio" className="mr-2" id="publisher" name="type" value="3" />
                                     <label htmlFor="publisher">Publisher</label>
                                 </div>
                             </div>
                             <div className="md:col-span-2">
-                                <button className="transition delay-150 duration-300 ease-in-out transform hover:scale-105 w-full rounded-lg py-3 text-sm gradient-bg-3 focus:outline-none">Send a Message</button>
+                                <button onClick={onSubmit} className="transition delay-150 duration-300 ease-in-out transform hover:scale-105 w-full rounded-lg py-3 text-sm gradient-bg-3 focus:outline-none">Send a Message</button>
                             </div>
                         </div>
                     </div>
